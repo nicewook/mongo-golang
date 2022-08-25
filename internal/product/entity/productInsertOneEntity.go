@@ -1,12 +1,12 @@
 package entity
 
-type ProductInsertReq struct {
+type ProductInsertOneReq struct {
 	Database   string
 	Collection string
 	Product
 }
 
-type ProductInsertResp struct {
+type ProductInsertOneResp struct {
 	InsertedID string
 	Message    string
 }

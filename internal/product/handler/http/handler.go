@@ -22,19 +22,18 @@ func NewProductHandler(e *echo.Echo, svc service.ProductService) {
 		return c.String(http.StatusOK, "Hello, World!")
 	})
 
-	// e.POST("/api/v1", handler.InsertOne)
 	e.POST("/api/v1/:db/:collection/insertone", handler.InsertOne)
+	e.GET("/api/v1/:db/:collection/findone", handler.FindOne)
+	// e.GET("/api/v1/:db/:collection/find", handler.Find)
 }
 
 // https://goplay.tools/snippet/epGWQSA2ZCx
 func (h *ProductHandler) InsertOne(c echo.Context) error {
 	log.Println("insert one")
-	// databaseName := "db"
 	databaseName := c.Param("db")
-	// collectionName := "collection"
 	collectionName := c.Param("collection")
 
-	dtoReq := dto.ProductInsertReq{
+	dtoReq := dto.ProductInsertOneReq{
 		DatabaseName:   databaseName,
 		CollectionName: collectionName,
 	}
@@ -47,6 +46,30 @@ func (h *ProductHandler) InsertOne(c echo.Context) error {
 	// if err != nil {
 	// 	return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	// }
+
+	return c.JSON(http.StatusOK, dtoResp)
+}
+
+func (h *ProductHandler) FindOne(c echo.Context) error {
+	log.Println("find one")
+	databaseName := c.Param("db")
+	collectionName := c.Param("collection")
+	productType := c.QueryParam("type")
+
+	dtoReq := dto.ProductFindOneReq{
+		DatabaseName:   databaseName,
+		CollectionName: collectionName,
+		Type:           productType,
+	}
+	log.Println("dtoReq", dtoReq)
+
+	dtoResp, err := h.svc.FindOne(dtoReq)
+	if err != nil {
+		return c.JSON(http.StatusOK, dto.ErrorResp{
+			Code:    "E0001",
+			Message: err.Error(),
+		})
+	}
 
 	return c.JSON(http.StatusOK, dtoResp)
 }

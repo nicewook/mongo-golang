@@ -1,5 +1,10 @@
 package dto
 
+import (
+	"bytes"
+	"encoding/gob"
+)
+
 type Release struct {
 	Version int    `json:"version,omitempty"`
 	Date    string `json:"date,omitempty"`
@@ -19,4 +24,18 @@ type Product struct {
 	Tags    []string `json:"tags,omitempty"`
 	Release `json:"release,omitempty"`
 	Reviews []Review `json:"reviews,omitempty"`
+}
+
+type ErrorResp struct {
+	Code    string
+	Message string
+}
+
+// Utility functions
+func DeepCopy(src, dist interface{}) (err error) {
+	buf := bytes.Buffer{}
+	if err = gob.NewEncoder(&buf).Encode(src); err != nil {
+		return
+	}
+	return gob.NewDecoder(&buf).Decode(dist)
 }
