@@ -44,7 +44,8 @@ func NewProductHandler(e *echo.Echo, svc service.ProductService) {
 		// DELETE / - query could be many
 
 		vOne.POST("/:db/:collection", handler.Insert)
-		vOne.GET("/api/v1/:db/:collection/findone", handler.FindOne)
+		vOne.GET("/:db/:collection/findone", handler.FindOne)
+		// vOne.GET("/api/v1/:db/:collection/findone", handler.FindOne)
 		vOne.GET("/api/v1/:db/:collection/find", handler.FindMany)
 	}
 	vTwo := e.Group("/v2")
@@ -88,7 +89,6 @@ func (h *ProductHandler) Insert(c echo.Context) error {
 			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 		}
 	}
-	// log.Println("dtoReq:", dtoReq)
 
 	dtoResp, err := h.svc.Insert(dtoReq)
 	if err != nil {
@@ -97,7 +97,6 @@ func (h *ProductHandler) Insert(c echo.Context) error {
 			Message: err.Error(),
 		})
 	}
-
 	return c.JSON(http.StatusOK, dtoResp)
 }
 
@@ -105,12 +104,12 @@ func (h *ProductHandler) FindOne(c echo.Context) error {
 	log.Println("find one")
 	databaseName := c.Param("db")
 	collectionName := c.Param("collection")
-	productType := c.QueryParam("type")
+	queryParams := c.QueryParams()
 
 	dtoReq := dto.ProductFindOneReq{
 		DatabaseName:   databaseName,
 		CollectionName: collectionName,
-		Type:           productType,
+		QueryParams:    queryParams,
 	}
 	log.Println("dtoReq", dtoReq)
 

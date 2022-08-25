@@ -49,7 +49,13 @@ func (m *MongoProductRepo) Insert(r entity.ProductInsertReq) (entResp entity.Pro
 func (m *MongoProductRepo) FindOne(r entity.ProductFindOneReq) (entResp entity.ProductFindOneResp, err error) {
 	collection := m.client.Database(r.Database).Collection(r.Collection)
 
-	filter := bson.D{{Key: "type", Value: r.Type}}
+	// limitation: cannot query on nested field
+	// in this case we might need for POST with JSON of filter
+	filter := bson.D{}
+	for k, v := range r.QueryParams {
+		filter = append(filter, bson.E{k, v[0]})
+	}
+	log.Printf("%T, %v", filter, filter)
 	if err = collection.FindOne(context.TODO(), filter).Decode(&entResp.Product); err != nil {
 		log.Println(err)
 	}

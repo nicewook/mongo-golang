@@ -1,20 +1,22 @@
 package dto
 
 import (
+	"net/url"
+
 	"github.com/nicewook/mg/internal/product/entity"
 )
 
 type ProductFindOneReq struct {
 	DatabaseName   string
 	CollectionName string
-	Type           string
+	QueryParams    url.Values
 }
 
 func (r ProductFindOneReq) ToEntity() entity.ProductFindOneReq {
 	return entity.ProductFindOneReq{
-		Database:   r.DatabaseName,
-		Collection: r.CollectionName,
-		Type:       r.Type,
+		Database:    r.DatabaseName,
+		Collection:  r.CollectionName,
+		QueryParams: r.QueryParams,
 	}
 }
 
