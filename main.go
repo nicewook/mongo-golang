@@ -6,9 +6,9 @@ import (
 	"os"
 
 	"github.com/labstack/echo"
-	handler "github.com/nicewok/mg/internal/product/handler/http"
-	"github.com/nicewok/mg/internal/product/repository"
-	"github.com/nicewok/mg/internal/product/service"
+	handler "github.com/nicewook/mg/internal/product/handler/http"
+	"github.com/nicewook/mg/internal/product/repository"
+	"github.com/nicewook/mg/internal/product/service"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )

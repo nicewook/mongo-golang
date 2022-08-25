@@ -1,7 +1,7 @@
 package dto
 
 import (
-	"github.com/nicewok/mg/internal/product/entity"
+	"github.com/nicewook/mg/internal/product/entity"
 )
 
 type ProductFindOneReq struct {

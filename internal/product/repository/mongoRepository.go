@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 
-	"github.com/nicewok/mg/internal/product/entity"
+	"github.com/nicewook/mg/internal/product/entity"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

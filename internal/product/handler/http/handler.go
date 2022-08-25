@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo"
-	"github.com/nicewok/mg/internal/product/dto"
-	"github.com/nicewok/mg/internal/product/service"
+	"github.com/nicewook/mg/internal/product/dto"
+	"github.com/nicewook/mg/internal/product/service"
 )
 
 type ProductHandler struct {

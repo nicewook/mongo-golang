@@ -3,8 +3,8 @@ package service
 import (
 	"log"
 
-	"github.com/nicewok/mg/internal/product/dto"
-	"github.com/nicewok/mg/internal/product/repository"
+	"github.com/nicewook/mg/internal/product/dto"
+	"github.com/nicewook/mg/internal/product/repository"
 )
 
 type ProductSvc struct {

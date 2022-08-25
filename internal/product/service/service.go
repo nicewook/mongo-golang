@@ -1,6 +1,6 @@
 package service
 
-import "github.com/nicewok/mg/internal/product/dto"
+import "github.com/nicewook/mg/internal/product/dto"
 
 type ProductService interface {
 	InsertOne(r dto.ProductInsertOneReq) (dto.ProductInsertOneResp, error)
