@@ -17,11 +17,11 @@ func NewProductSvc(repo repository.ProductRepository) ProductService {
 	}
 }
 
-func (svc *ProductSvc) InsertOne(r dto.ProductInsertOneReq) (dto.ProductInsertOneResp, error) {
+func (svc *ProductSvc) Insert(r dto.ProductInsertReq) (dto.ProductInsertResp, error) {
 	entReq := r.ToEntity()
-	entResp, err := svc.repository.InsertOne(entReq)
+	entResp, err := svc.repository.Insert(entReq)
 
-	var dtoResp dto.ProductInsertOneResp
+	var dtoResp dto.ProductInsertResp
 	dtoResp.ToDTO(entResp)
 	return dtoResp, err
 }

@@ -22,17 +22,27 @@ func NewMongoProductRepo(client *mongo.Client) ProductRepository {
 	}
 }
 
-func (m *MongoProductRepo) InsertOne(r entity.ProductInsertOneReq) (entResp entity.ProductInsertOneResp, err error) {
+func (m *MongoProductRepo) Insert(r entity.ProductInsertReq) (entResp entity.ProductInsertResp, err error) {
 	log.Println("insert one")
 	collection := m.client.Database(r.Database).Collection(r.Collection)
 
-	var result *mongo.InsertOneResult
-	result, err = collection.InsertOne(context.TODO(), r.Product)
+	var (
+		result *mongo.InsertManyResult
+		docs   []interface{}
+	)
+	for _, d := range r.Products {
+		docs = append(docs, d)
+	}
+
+	result, err = collection.InsertMany(context.TODO(), docs)
 	if err != nil {
 		return entResp, err
 	}
 
-	entResp.InsertedID = result.InsertedID.(primitive.ObjectID).Hex()
+	for _, id := range result.InsertedIDs {
+		entResp.InsertedIDs = append(entResp.InsertedIDs, id.(primitive.ObjectID).Hex())
+	}
+	log.Println("inserted ids:", entResp.InsertedIDs)
 	return entResp, err
 }
 

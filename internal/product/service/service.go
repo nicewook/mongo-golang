@@ -3,7 +3,7 @@ package service
 import "github.com/nicewook/mg/internal/product/dto"
 
 type ProductService interface {
-	InsertOne(r dto.ProductInsertOneReq) (dto.ProductInsertOneResp, error)
+	Insert(r dto.ProductInsertReq) (dto.ProductInsertResp, error)
 	FindOne(r dto.ProductFindOneReq) (dto.ProductFindOneResp, error)
 	FindMany(r dto.ProductFindManyReq) (dto.ProductFindManyResp, error)
 }

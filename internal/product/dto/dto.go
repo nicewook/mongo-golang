@@ -32,10 +32,10 @@ type ErrorResp struct {
 }
 
 // Utility functions
-func DeepCopy(src, dist interface{}) (err error) {
+func DeepCopy(dest, src interface{}) (err error) {
 	buf := bytes.Buffer{}
 	if err = gob.NewEncoder(&buf).Encode(src); err != nil {
 		return
 	}
-	return gob.NewDecoder(&buf).Decode(dist)
+	return gob.NewDecoder(&buf).Decode(dest)
 }

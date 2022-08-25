@@ -41,7 +41,7 @@ func NewProductHandler(e *echo.Echo, svc service.ProductService) {
 
 		// DELETE / - query could be many
 
-		vOne.POST("/api/v1/:db/:collection/insertone", handler.InsertOne)
+		vOne.POST("/:db/:collection", handler.Insert)
 		vOne.GET("/api/v1/:db/:collection/findone", handler.FindOne)
 		vOne.GET("/api/v1/:db/:collection/find", handler.FindMany)
 	}
@@ -56,21 +56,27 @@ func NewProductHandler(e *echo.Echo, svc service.ProductService) {
 }
 
 // https://goplay.tools/snippet/epGWQSA2ZCx
-func (h *ProductHandler) InsertOne(c echo.Context) error {
-	log.Println("insert one")
+func (h *ProductHandler) Insert(c echo.Context) error {
+	log.Println("insert")
 	databaseName := c.Param("db")
 	collectionName := c.Param("collection")
 
-	dtoReq := dto.ProductInsertOneReq{
+	dtoReq := dto.ProductInsertReq{
 		DatabaseName:   databaseName,
 		CollectionName: collectionName,
 	}
+
 	var product dto.Product
-	if err := c.Bind(&product); err != nil {
+
+	if err := c.Bind(&product); err == nil {
+		log.Println("insert one product")
+		dtoReq.Products = append(dtoReq.Products, product)
+	} else if err = c.Bind(&dtoReq.Products); err != nil {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
-	dtoReq.Product = product
-	dtoResp, err := h.svc.InsertOne(dtoReq)
+	// log.Println("dtoReq:", dtoReq)
+
+	dtoResp, err := h.svc.Insert(dtoReq)
 	if err != nil {
 		return c.JSON(http.StatusOK, dto.ErrorResp{
 			Code:    "E0001",

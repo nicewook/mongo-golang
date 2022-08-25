@@ -23,5 +23,5 @@ type ProductFindManyResp struct {
 }
 
 func (resp *ProductFindManyResp) ToDTO(entResp entity.ProductFindManyResp) {
-	DeepCopy(&entResp.Products, &resp.Products)
+	DeepCopy(&resp.Products, &entResp.Products)
 }
