@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/labstack/echo"
+	"github.com/labstack/echo/middleware"
 	handler "github.com/nicewook/mg/internal/product/handler/http"
 	"github.com/nicewook/mg/internal/product/repository"
 	"github.com/nicewook/mg/internal/product/service"
@@ -52,6 +53,7 @@ func main() {
 	productService := service.NewProductSvc(productRepository)  // get service interface
 
 	e := echo.New()
+	e.Pre(middleware.RemoveTrailingSlash())
 	handler.NewProductHandler(e, productService)
 
 	log.Fatal(e.Start(":8888"))
