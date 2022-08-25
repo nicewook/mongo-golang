@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"bytes"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -68,11 +70,23 @@ func (h *ProductHandler) Insert(c echo.Context) error {
 
 	var product dto.Product
 
+	// reuse request body: https://www.slll.info/archives/2625.html
+	b, err := ioutil.ReadAll(c.Request().Body)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	c.Request().Body = ioutil.NopCloser(bytes.NewBuffer(b))
+
+	// bind product or products
 	if err := c.Bind(&product); err == nil {
 		log.Println("insert one product")
 		dtoReq.Products = append(dtoReq.Products, product)
-	} else if err = c.Bind(&dtoReq.Products); err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	} else {
+		log.Println("insert many products:", err)
+		c.Request().Body = ioutil.NopCloser(bytes.NewBuffer(b))
+		if err = c.Bind(&dtoReq.Products); err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+		}
 	}
 	// log.Println("dtoReq:", dtoReq)
 
