@@ -13,13 +13,13 @@ type ProductSvc struct {
 
 var _ ProductService = (*ProductSvc)(nil)
 
-func (svc *ProductSvc) InsertOne(r dto.ProductInsertOneReq) dto.ProductInsertOneResp {
+func (svc *ProductSvc) InsertOne(r dto.ProductInsertOneReq) (dto.ProductInsertOneResp, error) {
 	entReq := r.ToEntity()
-	entResp := svc.repository.InsertOne(entReq)
+	entResp, err := svc.repository.InsertOne(entReq)
 
 	var dtoResp dto.ProductInsertOneResp
 	dtoResp.ToDTO(entResp)
-	return dtoResp
+	return dtoResp, err
 }
 
 func (svc *ProductSvc) FindOne(r dto.ProductFindOneReq) (dtoResp dto.ProductFindOneResp, err error) {

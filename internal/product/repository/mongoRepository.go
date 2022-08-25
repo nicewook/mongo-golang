@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/nicewok/mg/internal/product/entity"
@@ -17,35 +16,29 @@ type MongoProductRepo struct {
 
 var _ ProductRepository = (*MongoProductRepo)(nil)
 
-func (m *MongoProductRepo) InsertOne(r entity.ProductInsertOneReq) entity.ProductInsertOneResp {
-	coll := m.client.Database(r.Database).Collection(r.Collection)
-	result, err := coll.InsertOne(context.TODO(), r)
+func (m *MongoProductRepo) InsertOne(r entity.ProductInsertOneReq) (entResp entity.ProductInsertOneResp, err error) {
+	log.Println("insert one")
+	collection := m.client.Database(r.Database).Collection(r.Collection)
+
+	var result *mongo.InsertOneResult
+	result, err = collection.InsertOne(context.TODO(), r.Product)
 	if err != nil {
-		log.Println(err)
-		return entity.ProductInsertOneResp{
-			InsertedID: "",
-			Message:    "failed to insert",
-		}
+		return entResp, err
 	}
 
-	fmt.Printf("Inserted document with _id: %v\n", result.InsertedID)
-	insertedID := result.InsertedID.(primitive.ObjectID)
-
-	return entity.ProductInsertOneResp{
-		InsertedID: fmt.Sprintf("v", insertedID),
-		Message:    fmt.Sprintf("_id: %v inserted", insertedID),
-	}
+	entResp.InsertedID = result.InsertedID.(primitive.ObjectID).Hex()
+	return entResp, err
 }
 func (m *MongoProductRepo) FindOne(r entity.ProductFindOneReq) (entResp entity.ProductFindOneResp, err error) {
 	collection := m.client.Database(r.Database).Collection(r.Collection)
 
-	var doc bson.M
 	filter := bson.D{{Key: "type", Value: r.Type}}
-	if err = collection.FindOne(context.Background(), filter).Decode(&doc); err != nil {
+	// filter := bson.D{{Key: "type", Value: r.Type}}
+	// filter := bson.D{{Key: "type", Value: r.Type}}
+	if err = collection.FindOne(context.TODO(), filter).Decode(&entResp.Product); err != nil {
 		log.Println(err)
 	}
-	log.Println("doc bson.M:", doc)
-
+	log.Println("entResp:", entResp)
 	return entResp, err
 }
 

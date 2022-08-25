@@ -33,6 +33,7 @@ func getMongoClientByURI(uri string) (*mongo.Client, error) {
 }
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Println("start")
 
 	// MongoDB connection

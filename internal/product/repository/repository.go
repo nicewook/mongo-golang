@@ -5,6 +5,6 @@ import (
 )
 
 type ProductRepository interface {
-	InsertOne(r entity.ProductInsertOneReq) entity.ProductInsertOneResp
+	InsertOne(r entity.ProductInsertOneReq) (entity.ProductInsertOneResp, error)
 	FindOne(r entity.ProductFindOneReq) (entity.ProductFindOneResp, error)
 }

@@ -15,7 +15,7 @@ func (r ProductInsertOneReq) ToEntity() entity.ProductInsertOneReq {
 		Database:   r.DatabaseName,
 		Collection: r.CollectionName,
 	}
-	DeepCopy(r.Product, ent.Product)
+	DeepCopy(&r.Product, &ent.Product)
 	return ent
 }
 
@@ -26,5 +26,4 @@ type ProductInsertOneResp struct {
 
 func (resp *ProductInsertOneResp) ToDTO(entResp entity.ProductInsertOneResp) {
 	resp.InsertedID = entResp.InsertedID
-	resp.Message = entResp.Message
 }

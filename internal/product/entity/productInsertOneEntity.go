@@ -8,5 +8,4 @@ type ProductInsertOneReq struct {
 
 type ProductInsertOneResp struct {
 	InsertedID string
-	Message    string
 }

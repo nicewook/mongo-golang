@@ -42,10 +42,13 @@ func (h *ProductHandler) InsertOne(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	dtoReq.Product = product
-	dtoResp := h.svc.InsertOne(dtoReq)
-	// if err != nil {
-	// 	return echo.NewHTTPError(http.StatusBadRequest, err.Error())
-	// }
+	dtoResp, err := h.svc.InsertOne(dtoReq)
+	if err != nil {
+		return c.JSON(http.StatusOK, dto.ErrorResp{
+			Code:    "E0001",
+			Message: err.Error(),
+		})
+	}
 
 	return c.JSON(http.StatusOK, dtoResp)
 }
