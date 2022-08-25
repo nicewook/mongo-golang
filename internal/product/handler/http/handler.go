@@ -24,7 +24,7 @@ func NewProductHandler(e *echo.Echo, svc service.ProductService) {
 
 	e.POST("/api/v1/:db/:collection/insertone", handler.InsertOne)
 	e.GET("/api/v1/:db/:collection/findone", handler.FindOne)
-	// e.GET("/api/v1/:db/:collection/find", handler.Find)
+	e.GET("/api/v1/:db/:collection/find", handler.FindMany)
 }
 
 // https://goplay.tools/snippet/epGWQSA2ZCx
@@ -67,6 +67,30 @@ func (h *ProductHandler) FindOne(c echo.Context) error {
 	log.Println("dtoReq", dtoReq)
 
 	dtoResp, err := h.svc.FindOne(dtoReq)
+	if err != nil {
+		return c.JSON(http.StatusOK, dto.ErrorResp{
+			Code:    "E0001",
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, dtoResp)
+}
+
+func (h *ProductHandler) FindMany(c echo.Context) error {
+	log.Println("find many")
+	databaseName := c.Param("db")
+	collectionName := c.Param("collection")
+	productType := c.QueryParam("type")
+
+	dtoReq := dto.ProductFindManyReq{
+		DatabaseName:   databaseName,
+		CollectionName: collectionName,
+		Type:           productType,
+	}
+	log.Println("dtoReq", dtoReq)
+
+	dtoResp, err := h.svc.FindMany(dtoReq)
 	if err != nil {
 		return c.JSON(http.StatusOK, dto.ErrorResp{
 			Code:    "E0001",

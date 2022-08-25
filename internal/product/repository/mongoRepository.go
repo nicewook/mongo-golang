@@ -16,6 +16,12 @@ type MongoProductRepo struct {
 
 var _ ProductRepository = (*MongoProductRepo)(nil)
 
+func NewMongoProductRepo(client *mongo.Client) ProductRepository {
+	return &MongoProductRepo{
+		client: client,
+	}
+}
+
 func (m *MongoProductRepo) InsertOne(r entity.ProductInsertOneReq) (entResp entity.ProductInsertOneResp, err error) {
 	log.Println("insert one")
 	collection := m.client.Database(r.Database).Collection(r.Collection)
@@ -29,12 +35,11 @@ func (m *MongoProductRepo) InsertOne(r entity.ProductInsertOneReq) (entResp enti
 	entResp.InsertedID = result.InsertedID.(primitive.ObjectID).Hex()
 	return entResp, err
 }
+
 func (m *MongoProductRepo) FindOne(r entity.ProductFindOneReq) (entResp entity.ProductFindOneResp, err error) {
 	collection := m.client.Database(r.Database).Collection(r.Collection)
 
 	filter := bson.D{{Key: "type", Value: r.Type}}
-	// filter := bson.D{{Key: "type", Value: r.Type}}
-	// filter := bson.D{{Key: "type", Value: r.Type}}
 	if err = collection.FindOne(context.TODO(), filter).Decode(&entResp.Product); err != nil {
 		log.Println(err)
 	}
@@ -42,8 +47,25 @@ func (m *MongoProductRepo) FindOne(r entity.ProductFindOneReq) (entResp entity.P
 	return entResp, err
 }
 
-func NewMongoProductRepo(client *mongo.Client) ProductRepository {
-	return &MongoProductRepo{
-		client: client,
+func (m *MongoProductRepo) FindMany(r entity.ProductFindManyReq) (entResp entity.ProductFindManyResp, err error) {
+	collection := m.client.Database(r.Database).Collection(r.Collection)
+
+	filter := bson.D{{Key: "type", Value: r.Type}}
+	ctx := context.TODO()
+	curser, err := collection.Find(ctx, filter)
+	if err != nil {
+		return entResp, err
 	}
+	defer curser.Close(ctx)
+
+	for curser.Next(ctx) {
+		var product entity.Product
+		if err := curser.Decode(&product); err != nil {
+			return entResp, err
+		}
+		entResp.Products = append(entResp.Products, product)
+	}
+
+	log.Println("entResp.Products:", entResp.Products)
+	return entResp, err
 }
