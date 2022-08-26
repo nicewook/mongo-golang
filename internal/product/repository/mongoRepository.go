@@ -53,20 +53,26 @@ func (m *MongoProductRepo) FindOne(r entity.ProductFindOneReq) (entResp entity.P
 	// in this case we might need for POST with JSON of filter
 	filter := bson.D{}
 	for k, v := range r.QueryParams {
-		filter = append(filter, bson.E{k, v[0]})
+		filter = append(filter, bson.E{Key: k, Value: v[0]})
 	}
-	log.Printf("%T, %v", filter, filter)
+
 	if err = collection.FindOne(context.TODO(), filter).Decode(&entResp.Product); err != nil {
 		log.Println(err)
 	}
-	log.Println("entResp:", entResp)
+	log.Println("found one document")
 	return entResp, err
 }
 
 func (m *MongoProductRepo) FindMany(r entity.ProductFindManyReq) (entResp entity.ProductFindManyResp, err error) {
 	collection := m.client.Database(r.Database).Collection(r.Collection)
 
-	filter := bson.D{{Key: "type", Value: r.Type}}
+	// limitation: cannot query on nested field
+	// in this case we might need for POST with JSON of filter
+	filter := bson.D{}
+	for k, v := range r.QueryParams {
+		filter = append(filter, bson.E{Key: k, Value: v[0]})
+	}
+
 	ctx := context.TODO()
 	curser, err := collection.Find(ctx, filter)
 	if err != nil {
@@ -82,6 +88,6 @@ func (m *MongoProductRepo) FindMany(r entity.ProductFindManyReq) (entResp entity
 		entResp.Products = append(entResp.Products, product)
 	}
 
-	log.Println("entResp.Products:", entResp.Products)
+	log.Println("found document count:", len(entResp.Products))
 	return entResp, err
 }

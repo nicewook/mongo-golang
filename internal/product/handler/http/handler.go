@@ -43,10 +43,9 @@ func NewProductHandler(e *echo.Echo, svc service.ProductService) {
 
 		// DELETE / - query could be many
 
-		vOne.POST("/:db/:collection", handler.Insert)
-		vOne.GET("/:db/:collection/findone", handler.FindOne)
-		// vOne.GET("/api/v1/:db/:collection/findone", handler.FindOne)
-		vOne.GET("/api/v1/:db/:collection/find", handler.FindMany)
+		vOne.POST("/:db/:collection", handler.Insert)         // insert one or more documents
+		vOne.GET("/:db/:collection/findone", handler.FindOne) // fine one with one or more query params
+		vOne.GET("/:db/:collection/find", handler.FindMany)
 	}
 	vTwo := e.Group("/v2")
 	{
@@ -104,7 +103,7 @@ func (h *ProductHandler) FindOne(c echo.Context) error {
 	log.Println("find one")
 	databaseName := c.Param("db")
 	collectionName := c.Param("collection")
-	queryParams := c.QueryParams()
+	queryParams := c.QueryParams() // if no query param - it will not come to this endpoint
 
 	dtoReq := dto.ProductFindOneReq{
 		DatabaseName:   databaseName,
@@ -128,12 +127,12 @@ func (h *ProductHandler) FindMany(c echo.Context) error {
 	log.Println("find many")
 	databaseName := c.Param("db")
 	collectionName := c.Param("collection")
-	productType := c.QueryParam("type")
+	queryParams := c.QueryParams() // if no query param - it will not come to this endpoint
 
 	dtoReq := dto.ProductFindManyReq{
 		DatabaseName:   databaseName,
 		CollectionName: collectionName,
-		Type:           productType,
+		QueryParams:    queryParams,
 	}
 	log.Println("dtoReq", dtoReq)
 
