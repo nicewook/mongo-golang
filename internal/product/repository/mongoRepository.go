@@ -105,6 +105,24 @@ func (m *MongoProductRepo) CountDocuments(r entity.ProductCountDocumentsReq) (en
 	entResp.Count, err = collection.CountDocuments(context.TODO(), filter)
 	return entResp, err
 }
+func (m *MongoProductRepo) AddReview(r entity.ProductAddReviewReq) (entResp entity.ProductAddReviewResp, err error) {
+	collection := m.client.Database(r.Database).Collection(r.Collection)
+
+	filter := bson.D{{"name", r.ProductName}}
+	reviews := []entity.Review{r.Review}
+	addReview := bson.M{"$addToSet": bson.M{"reviews": bson.M{"$each": reviews}}}
+	// addReview := bson.M{"$push": bson.M{"reviews": bson.M{"$each": reviews}}}
+
+	var result *mongo.UpdateResult
+	if result, err = collection.UpdateOne(context.TODO(), filter, addReview); err != nil {
+		return entResp, err
+	}
+	entResp.MatchedCount = result.MatchedCount
+	entResp.ModifiedCount = result.ModifiedCount
+	entResp.UpsertedCount = result.UpsertedCount
+	entResp.UpsertedID = result.UpsertedID
+	return entResp, err
+}
 
 func (m *MongoProductRepo) DeleteDocuments(r entity.ProductDeleteDocumentsReq) (entResp entity.ProductDeleteDocumentsResp, err error) {
 	collection := m.client.Database(r.Database).Collection(r.Collection)

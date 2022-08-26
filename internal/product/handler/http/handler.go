@@ -31,23 +31,15 @@ func NewProductHandler(e *echo.Echo, svc service.ProductService) {
 			log.Println("hello. v1")
 			return c.String(http.StatusOK, "Hello, World! (API: v1)")
 		})
-		// GET /
-
-		// POST database/collection - one or many
-		// GET /findone - query could be many, get on
-		// GET /find - query could be many, get all
-		// GET /count - query could be many
-
-		// PUT /product-id/review
-		// PUT /product-id/tag
-
-		// DELETE / - query could be many
 
 		vOne.POST("/:db/:collection", handler.Insert) // insert one or more documents
 
 		vOne.GET("/:db/:collection/findone", handler.FindOne) // fine one with one or more query params
 		vOne.GET("/:db/:collection/find", handler.FindMany)
 		vOne.GET("/:db/:collection/count", handler.CountDocuments)
+
+		vOne.PUT("/:db/:collection/:productName/review", handler.AddReview) // https://stackoverflow.com/q/54764101
+		vOne.PUT("/:db/:collection/:productName/tag", handler.AddTag)
 
 		vOne.DELETE("/:db/:collection", handler.DeleteDocuments)
 	}
@@ -173,6 +165,40 @@ func (h *ProductHandler) CountDocuments(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, dtoResp)
+}
+
+func (h *ProductHandler) AddReview(c echo.Context) error {
+	log.Println("add review - no duplication")
+	databaseName := c.Param("db")
+	collectionName := c.Param("collection")
+	productName := c.Param("productName")
+
+	var review dto.Review
+	if err := c.Bind(&review); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	dtoReq := dto.ProductAddReviewReq{
+		DatabaseName:   databaseName,
+		CollectionName: collectionName,
+		ProductName:    productName,
+		Review:         review,
+	}
+
+	dtoResp, err := h.svc.AddReview(dtoReq)
+	if err != nil {
+		return c.JSON(http.StatusOK, dto.ErrorResp{
+			Code:    "E0001",
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, dtoResp)
+}
+
+func (h *ProductHandler) AddTag(c echo.Context) error {
+	return nil
+
 }
 
 func (h *ProductHandler) DeleteDocuments(c echo.Context) error {
