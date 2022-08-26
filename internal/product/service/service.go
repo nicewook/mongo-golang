@@ -10,6 +10,7 @@ type ProductService interface {
 	CountDocuments(r dto.ProductCountDocumentsReq) (dto.ProductCountDocumentsResp, error)
 
 	AddReview(r dto.ProductAddReviewReq) (dto.ProductAddReviewResp, error)
+	AddTag(r dto.ProductAddTagReq) (dto.ProductAddTagResp, error)
 
 	DeleteDocuments(r dto.ProductDeleteDocumentsReq) (dto.ProductDeleteDocumentsResp, error)
 }

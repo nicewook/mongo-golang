@@ -192,12 +192,35 @@ func (h *ProductHandler) AddReview(c echo.Context) error {
 			Message: err.Error(),
 		})
 	}
-
 	return c.JSON(http.StatusOK, dtoResp)
 }
 
 func (h *ProductHandler) AddTag(c echo.Context) error {
-	return nil
+	log.Println("add tag - no duplication")
+	databaseName := c.Param("db")
+	collectionName := c.Param("collection")
+	productName := c.Param("productName")
+
+	tag := struct{ Tag string }{}
+	if err := c.Bind(&tag); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
+	dtoReq := dto.ProductAddTagReq{
+		DatabaseName:   databaseName,
+		CollectionName: collectionName,
+		ProductName:    productName,
+		Tag:            tag.Tag,
+	}
+
+	dtoResp, err := h.svc.AddTag(dtoReq)
+	if err != nil {
+		return c.JSON(http.StatusOK, dto.ErrorResp{
+			Code:    "E0001",
+			Message: err.Error(),
+		})
+	}
+	return c.JSON(http.StatusOK, dtoResp)
 
 }
 

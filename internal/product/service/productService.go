@@ -58,6 +58,14 @@ func (svc *ProductSvc) AddReview(r dto.ProductAddReviewReq) (dtoResp dto.Product
 	return dtoResp, err
 }
 
+func (svc *ProductSvc) AddTag(r dto.ProductAddTagReq) (dtoResp dto.ProductAddTagResp, err error) {
+	entReq := r.ToEntity()
+	entResp, err := svc.repository.AddTag(entReq)
+	dtoResp.ToDTO(entResp)
+
+	return dtoResp, err
+}
+
 func (svc *ProductSvc) DeleteDocuments(r dto.ProductDeleteDocumentsReq) (dtoResp dto.ProductDeleteDocumentsResp, err error) {
 	entReq := r.ToEntity()
 	entResp, err := svc.repository.DeleteDocuments(entReq)

@@ -12,5 +12,7 @@ type ProductRepository interface {
 	CountDocuments(r entity.ProductCountDocumentsReq) (entity.ProductCountDocumentsResp, error)
 
 	AddReview(r entity.ProductAddReviewReq) (entity.ProductAddReviewResp, error)
+	AddTag(r entity.ProductAddTagReq) (entity.ProductAddTagResp, error)
+
 	DeleteDocuments(r entity.ProductDeleteDocumentsReq) (entity.ProductDeleteDocumentsResp, error)
 }
