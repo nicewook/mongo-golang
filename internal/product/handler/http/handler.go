@@ -48,6 +48,8 @@ func NewProductHandler(e *echo.Echo, svc service.ProductService) {
 		vOne.GET("/:db/:collection/findone", handler.FindOne) // fine one with one or more query params
 		vOne.GET("/:db/:collection/find", handler.FindMany)
 		vOne.GET("/:db/:collection/count", handler.CountDocuments)
+
+		vOne.DELETE("/:db/:collection", handler.DeleteDocuments)
 	}
 	vTwo := e.Group("/v2")
 	{
@@ -163,6 +165,30 @@ func (h *ProductHandler) CountDocuments(c echo.Context) error {
 	// log.Println("dtoReq", dtoReq)
 
 	dtoResp, err := h.svc.CountDocuments(dtoReq)
+	if err != nil {
+		return c.JSON(http.StatusOK, dto.ErrorResp{
+			Code:    "E0001",
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, dtoResp)
+}
+
+func (h *ProductHandler) DeleteDocuments(c echo.Context) error {
+	log.Println("delete documents")
+	databaseName := c.Param("db")
+	collectionName := c.Param("collection")
+	queryParams := c.QueryParams() // if no query param - it will delete all documents
+
+	dtoReq := dto.ProductDeleteDocumentsReq{
+		DatabaseName:   databaseName,
+		CollectionName: collectionName,
+		QueryParams:    queryParams,
+	}
+	// log.Println("dtoReq", dtoReq)
+
+	dtoResp, err := h.svc.DeleteDocuments(dtoReq)
 	if err != nil {
 		return c.JSON(http.StatusOK, dto.ErrorResp{
 			Code:    "E0001",

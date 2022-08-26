@@ -9,4 +9,5 @@ type ProductRepository interface {
 	FindOne(r entity.ProductFindOneReq) (entity.ProductFindOneResp, error)
 	FindMany(r entity.ProductFindManyReq) (entity.ProductFindManyResp, error)
 	CountDocuments(r entity.ProductCountDocumentsReq) (entity.ProductCountDocumentsResp, error)
+	DeleteDocuments(r entity.ProductDeleteDocumentsReq) (entity.ProductDeleteDocumentsResp, error)
 }

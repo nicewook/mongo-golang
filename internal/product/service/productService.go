@@ -49,3 +49,10 @@ func (svc *ProductSvc) CountDocuments(r dto.ProductCountDocumentsReq) (dtoResp d
 
 	return dtoResp, err
 }
+func (svc *ProductSvc) DeleteDocuments(r dto.ProductDeleteDocumentsReq) (dtoResp dto.ProductDeleteDocumentsResp, err error) {
+	entReq := r.ToEntity()
+	entResp, err := svc.repository.DeleteDocuments(entReq)
+	dtoResp.ToDTO(entResp)
+
+	return dtoResp, err
+}

@@ -7,4 +7,5 @@ type ProductService interface {
 	FindOne(r dto.ProductFindOneReq) (dto.ProductFindOneResp, error)
 	FindMany(r dto.ProductFindManyReq) (dto.ProductFindManyResp, error)
 	CountDocuments(r dto.ProductCountDocumentsReq) (dto.ProductCountDocumentsResp, error)
+	DeleteDocuments(r dto.ProductDeleteDocumentsReq) (dto.ProductDeleteDocumentsResp, error)
 }
