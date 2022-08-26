@@ -1,10 +1,96 @@
-basePath: /v1, there is /v2, but it is just for demo
+definitions:
+  dto.ErrorResp:
+    properties:
+      code:
+        type: string
+      message:
+        type: string
+    type: object
+  dto.Product:
+    properties:
+      date:
+        type: string
+      name:
+        type: string
+      reviews:
+        items:
+          $ref: '#/definitions/dto.Review'
+        type: array
+      tags:
+        items:
+          type: string
+        type: array
+      type:
+        type: string
+      version:
+        type: integer
+    type: object
+  dto.ProductAddReviewResp:
+    properties:
+      message:
+        type: string
+    type: object
+  dto.ProductAddTagResp:
+    properties:
+      message:
+        type: string
+    type: object
+  dto.ProductCountDocumentsResp:
+    properties:
+      count:
+        type: integer
+    type: object
+  dto.ProductDeleteDocumentsResp:
+    properties:
+      count:
+        type: integer
+    type: object
+  dto.ProductFindOneResp:
+    properties:
+      date:
+        type: string
+      name:
+        type: string
+      reviews:
+        items:
+          $ref: '#/definitions/dto.Review'
+        type: array
+      tags:
+        items:
+          type: string
+        type: array
+      type:
+        type: string
+      version:
+        type: integer
+    type: object
+  dto.ProductInsertResp:
+    properties:
+      insertedIDs:
+        items:
+          type: string
+        type: array
+    type: object
+  dto.Review:
+    properties:
+      comment:
+        type: string
+      created_at:
+        description: RFC3339
+        type: string
+      name:
+        type: string
+      type:
+        type: string
+      user_id:
+        type: string
+    type: object
 host: localhost:8888
 info:
   contact:
     email: hyunseok.jeong@annotation-ai.com
     name: hyunseok.jeong
-    url: http://annotation-ai.com
+    url: http://www.annotation-ai.com
   description: This show two things. Golang-MongoDB CRUD server and Clean Architecture.
   license:
     name: Apache 2.0
@@ -12,5 +98,221 @@ info:
   termsOfService: http://swagger.io/terms/
   title: Golang MongoDB CRUD - Clean Architecture example
   version: "1.0"
-paths: {}
+paths:
+  /v1/{db}/{collection}:
+    delete:
+      consumes:
+      - application/json
+      description: |-
+        Delete documents with a filter from the designated database and collection
+        If there's no filter, it will delete all the documents
+      parameters:
+      - description: Database Name
+        in: path
+        name: db
+        required: true
+        type: string
+      - description: Collection Name
+        in: path
+        name: collection
+        required: true
+        type: string
+      - description: Any root field can be used as a filter
+        in: query
+        name: q
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ErrorResp'
+      summary: Delete documents with a filter
+    post:
+      consumes:
+      - application/json
+      description: |-
+        Insert products to the designated database and collection
+        You can insert just one product instead of array of product
+      parameters:
+      - description: Database Name
+        in: path
+        name: db
+        required: true
+        type: string
+      - description: Collection Name
+        in: path
+        name: collection
+        required: true
+        type: string
+      - description: Array of Product Body
+        in: body
+        name: Products
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/dto.Product'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ErrorResp'
+        "400":
+          description: error messages
+          schema:
+            type: string
+      summary: Insert products
+  /v1/{db}/{collection}/{productName}/review:
+    put:
+      consumes:
+      - application/json
+      description: Add a review to the document only if it is already exist
+      parameters:
+      - description: Database Name
+        in: path
+        name: db
+        required: true
+        type: string
+      - description: Collection Name
+        in: path
+        name: collection
+        required: true
+        type: string
+      - description: Product Name
+        in: path
+        name: productName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ErrorResp'
+      summary: Add a review to the document
+  /v1/{db}/{collection}/{productName}/tag:
+    put:
+      consumes:
+      - application/json
+      description: Add a tag to the document only if it is already exist
+      parameters:
+      - description: Database Name
+        in: path
+        name: db
+        required: true
+        type: string
+      - description: Collection Name
+        in: path
+        name: collection
+        required: true
+        type: string
+      - description: Product Name
+        in: path
+        name: productName
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ErrorResp'
+      summary: Add a tag to the document
+  /v1/{db}/{collection}/count:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Count documents with a filter from the designated database and collection
+        If there's no filter, it will count all the documents
+      parameters:
+      - description: Database Name
+        in: path
+        name: db
+        required: true
+        type: string
+      - description: Collection Name
+        in: path
+        name: collection
+        required: true
+        type: string
+      - description: Any root field can be used as a filter
+        in: query
+        name: q
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ErrorResp'
+      summary: Count documents with a filter
+  /v1/{db}/{collection}/find:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Find many products with a filter from the designated database and collection
+        If there's no filter, it will get all the documents
+      parameters:
+      - description: Database Name
+        in: path
+        name: db
+        required: true
+        type: string
+      - description: Collection Name
+        in: path
+        name: collection
+        required: true
+        type: string
+      - description: Any root field can be used as a filter
+        in: query
+        name: q
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ErrorResp'
+      summary: Find many products
+  /v1/{db}/{collection}/findone:
+    get:
+      consumes:
+      - application/json
+      description: |-
+        Find one product with a filter from the designated database and collection
+        You should have at least one filter
+      parameters:
+      - description: Database Name
+        in: path
+        name: db
+        required: true
+        type: string
+      - description: Collection Name
+        in: path
+        name: collection
+        required: true
+        type: string
+      - description: Any root field can be used as a filter
+        in: query
+        name: q
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.ErrorResp'
+      summary: Find one product
 swagger: "2.0"

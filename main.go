@@ -37,20 +37,19 @@ func getMongoClientByURI(uri string) (*mongo.Client, error) {
 	return client, err
 }
 
-// @title Golang MongoDB CRUD - Clean Architecture example
-// @version 1.0
-// @description This show two things. Golang-MongoDB CRUD server and Clean Architecture.
+// @title          Golang MongoDB CRUD - Clean Architecture example
+// @version        1.0
+// @description    This show two things. Golang-MongoDB CRUD server and Clean Architecture.
 // @termsOfService http://swagger.io/terms/
 
-// @contact.name hyunseok.jeong
-// @contact.url http://www.annotation-ai.com
+// @contact.name  hyunseok.jeong
+// @contact.url   http://www.annotation-ai.com
 // @contact.email hyunseok.jeong@annotation-ai.com
 
 // @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @license.url  http://www.apache.org/licenses/LICENSE-2.0.html
 
 // @host localhost:8888
-// @BasePath /v1, there is /v2, but it is just for demo
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Println("start")
