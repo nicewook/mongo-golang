@@ -41,3 +41,11 @@ func (svc *ProductSvc) FindMany(r dto.ProductFindManyReq) (dtoResp dto.ProductFi
 
 	return dtoResp, err
 }
+
+func (svc *ProductSvc) CountDocuments(r dto.ProductCountDocumentsReq) (dtoResp dto.ProductCountDocumentsResp, err error) {
+	entReq := r.ToEntity()
+	entResp, err := svc.repository.CountDocuments(entReq)
+	dtoResp.ToDTO(entResp)
+
+	return dtoResp, err
+}

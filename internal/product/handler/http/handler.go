@@ -43,9 +43,11 @@ func NewProductHandler(e *echo.Echo, svc service.ProductService) {
 
 		// DELETE / - query could be many
 
-		vOne.POST("/:db/:collection", handler.Insert)         // insert one or more documents
+		vOne.POST("/:db/:collection", handler.Insert) // insert one or more documents
+
 		vOne.GET("/:db/:collection/findone", handler.FindOne) // fine one with one or more query params
 		vOne.GET("/:db/:collection/find", handler.FindMany)
+		vOne.GET("/:db/:collection/count", handler.CountDocuments)
 	}
 	vTwo := e.Group("/v2")
 	{
@@ -137,6 +139,30 @@ func (h *ProductHandler) FindMany(c echo.Context) error {
 	log.Println("dtoReq", dtoReq)
 
 	dtoResp, err := h.svc.FindMany(dtoReq)
+	if err != nil {
+		return c.JSON(http.StatusOK, dto.ErrorResp{
+			Code:    "E0001",
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, dtoResp)
+}
+
+func (h *ProductHandler) CountDocuments(c echo.Context) error {
+	log.Println("count documents")
+	databaseName := c.Param("db")
+	collectionName := c.Param("collection")
+	queryParams := c.QueryParams() // if no query param - it will count all documents
+
+	dtoReq := dto.ProductCountDocumentsReq{
+		DatabaseName:   databaseName,
+		CollectionName: collectionName,
+		QueryParams:    queryParams,
+	}
+	// log.Println("dtoReq", dtoReq)
+
+	dtoResp, err := h.svc.CountDocuments(dtoReq)
 	if err != nil {
 		return c.JSON(http.StatusOK, dto.ErrorResp{
 			Code:    "E0001",

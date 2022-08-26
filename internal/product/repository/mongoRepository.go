@@ -91,3 +91,16 @@ func (m *MongoProductRepo) FindMany(r entity.ProductFindManyReq) (entResp entity
 	log.Println("found document count:", len(entResp.Products))
 	return entResp, err
 }
+func (m *MongoProductRepo) CountDocuments(r entity.ProductCountDocumentsReq) (entResp entity.ProductCountDocumentsResp, err error) {
+	collection := m.client.Database(r.Database).Collection(r.Collection)
+
+	// limitation: cannot query on nested field
+	// in this case we might need for POST with JSON of filter
+	filter := bson.D{}
+	for k, v := range r.QueryParams {
+		filter = append(filter, bson.E{Key: k, Value: v[0]})
+	}
+
+	entResp.Count, err = collection.CountDocuments(context.TODO(), filter)
+	return entResp, err
+}
