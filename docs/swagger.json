@@ -1,0 +1,21 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "This show two things. Golang-MongoDB CRUD server and Clean Architecture.",
+        "title": "Golang MongoDB CRUD - Clean Architecture example",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "hyunseok.jeong",
+            "url": "http://annotation-ai.com",
+            "email": "hyunseok.jeong@annotation-ai.com"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8888",
+    "basePath": "/v1, there is /v2, but it is just for demo",
+    "paths": {}
+}

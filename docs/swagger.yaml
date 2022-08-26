@@ -1,0 +1,16 @@
+basePath: /v1, there is /v2, but it is just for demo
+host: localhost:8888
+info:
+  contact:
+    email: hyunseok.jeong@annotation-ai.com
+    name: hyunseok.jeong
+    url: http://annotation-ai.com
+  description: This show two things. Golang-MongoDB CRUD server and Clean Architecture.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Golang MongoDB CRUD - Clean Architecture example
+  version: "1.0"
+paths: {}
+swagger: "2.0"

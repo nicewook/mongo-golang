@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/nicewook/mg/internal/product/dto"
 	"github.com/nicewook/mg/internal/product/service"
 )
@@ -53,8 +53,7 @@ func NewProductHandler(e *echo.Echo, svc service.ProductService) {
 
 }
 
-// https://goplay.tools/snippet/epGWQSA2ZCx
-func (h *ProductHandler) Insert(c echo.Context) error {
+func (h *ProductHandler) Insert(c echo.Context) error { // https://goplay.tools/snippet/epGWQSA2ZCx
 	log.Println("insert")
 	databaseName := c.Param("db")
 	collectionName := c.Param("collection")
