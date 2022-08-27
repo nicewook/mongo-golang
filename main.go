@@ -5,11 +5,13 @@ import (
 	"log"
 	"os"
 
+	echoPrometheus "github.com/globocom/echo-prometheus"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	handler "github.com/nicewook/mg/internal/product/handler/http"
 	"github.com/nicewook/mg/internal/product/repository"
 	"github.com/nicewook/mg/internal/product/service"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 
@@ -71,8 +73,11 @@ func main() {
 
 	e := echo.New()
 	e.Use(middleware.RemoveTrailingSlash())
-	handler.NewProductHandler(e, productService)
+	e.Use(echoPrometheus.MetricsMiddleware())
+	e.GET("/metrics", echo.WrapHandler(promhttp.Handler()))
 	e.GET("/swagger/*", echoSwagger.WrapHandler)
+
+	handler.NewProductHandler(e, productService)
 
 	log.Fatal(e.Start(":8888"))
 }
